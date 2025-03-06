@@ -103,7 +103,7 @@ public class RobotContainer {
 
     public double controlledVelocity(double joystick_value, int ticks){
 
-        return joystick_value * Math.atan(ticks/6)/(0.4375*Math.PI);
+        return Math.min(joystick_value * Math.atan(ticks/6)/(0.4375*Math.PI), 1.0);
         // rationale: 
         // https://www.desmos.com/calculator/iiwggwc2ha    
     }
