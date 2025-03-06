@@ -24,7 +24,7 @@ public class RobotContainer {
     private int joystickTicks_Y = 0;
     private int joystickTicks_R = 0;
 
-    
+    private boolean resetHeading = false;
 
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
@@ -57,6 +57,7 @@ public class RobotContainer {
                 double powerX = controlledVelocity(-joystick.getLeftX(),joystickTicks_X);
                 double powerY =controlledVelocity(-joystick.getLeftY(),joystickTicks_Y);
                 double powerR =controlledVelocity(-joystick.getRightX(), joystickTicks_R);
+
                 if(joystick.getLeftX() < 0.1){ //account for input floatiness;
                     powerX = 0;
                     joystickTicks_X = 0;
@@ -68,6 +69,13 @@ public class RobotContainer {
                 if(joystick.getRightX() < 0.1){ 
                     powerR = 0;
                     joystickTicks_R = 0;
+                    if(!resetHeading){
+                        drivetrain.seedFieldCentric();
+                        resetHeading = true;
+                    }
+                }
+                else{
+                    resetHeading = false;
                 }
                 
                 return drive.withVelocityX(powerX * MaxSpeed) // Drive forward with negative Y (forward)
@@ -91,9 +99,6 @@ public class RobotContainer {
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         
-        //may need to test this, but I think it should make the robot realign as we steer.
-        joystick.leftStick().onChange(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
