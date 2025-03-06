@@ -58,15 +58,15 @@ public class RobotContainer {
                 double powerY =controlledVelocity(-joystick.getLeftY(),joystickTicks_Y);
                 double powerR =controlledVelocity(-joystick.getRightX(), joystickTicks_R);
 
-                if(joystick.getLeftX() < 0.1){ //account for input floatiness;
+                if(Math.abs(joystick.getLeftX()) < 0.1){ //account for input floatiness;
                     powerX = 0;
                     joystickTicks_X = 0;
                 }
-                if(joystick.getLeftY() < 0.1){ 
+                if(Math.abs(joystick.getLeftY()) < 0.1){ 
                     powerY = 0;
                     joystickTicks_Y = 0;
                 }
-                if(joystick.getRightX() < 0.1){ 
+                if(Math.abs(joystick.getRightX()) < 0.1){ 
                     powerR = 0;
                     joystickTicks_R = 0;
                     if(!resetHeading){
@@ -83,7 +83,7 @@ public class RobotContainer {
                     .withRotationalRate(powerR * MaxAngularRate); // Drive counterclockwise with negative X (left)
                 })
         );
-
+        joystick.rightTrigger().whileTrue(drivetrain.applyRequest(()-> brake));
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
